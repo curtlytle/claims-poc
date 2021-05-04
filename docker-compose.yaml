@@ -1,0 +1,33 @@
+version: "3"
+
+services:
+  claim-database:
+    image: postgres
+    container_name: claim_database
+    networks:
+      - sif-network
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_PASSWORD=sifpassword
+      - POSTGRES_USER=sifuser
+      - POSTGRES_DB=claimdb
+    volumes:
+      - sif-claims-volume:/var/lib/postgresql/data
+  #      - "//c/docker-volumes/claim-poc:/var/lib/postgresql/data"
+
+  sif-claims-service:
+    image: sif-claims-service
+    container_name: sif-claims-service
+    networks:
+      - sif-network
+    ports:
+      - 8080:8080
+    depends_on:
+      - claim-database
+
+networks:
+  sif-network:
+
+volumes:
+  sif-claims-volume:
